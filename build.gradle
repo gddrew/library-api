@@ -1,0 +1,123 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+	id 'com.diffplug.spotless' version '6.25.0'
+	id 'com.github.ben-manes.versions' version '0.51.0'
+	id 'io.freefair.lombok' version '8.11'
+	id 'java'
+	id 'jacoco'
+	id 'org.springframework.boot' version '3.4.1'
+}
+
+group = 'com.randomlake'
+version = '0.1.0'
+description = 'Library management system'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+// Customize configuration to support Spring Boot devtools
+configurations {
+	integrationTestCompile.extendsFrom testCompile
+	integrationTestRuntime.extendsFrom testRuntime
+	developmentOnly.extendsFrom implementation
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+// Define version variables
+ext {
+	jacoco {
+		toolVersion = '0.8.12'
+	}
+}
+
+dependencies {
+	implementation platform(SpringBootPlugin.BOM_COORDINATES)
+
+	// Spring Boot Dependencies
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Validation and Security
+	implementation 'jakarta.validation:jakarta.validation-api'
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	implementation 'org.hibernate.validator:hibernate-validator'
+
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+	runtimeOnly 'jakarta.el:jakarta.el-api:6.0.1'
+
+	// Compile-time dependencies
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Test dependencies
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-validation'
+}
+
+// Plugin-specific Configurations
+spotless {
+	java {
+		googleJavaFormat('1.10.0')
+		removeUnusedImports()
+	}
+}
+
+springBoot {
+	buildInfo()
+}
+
+// *** Task Configurations ***
+// Run 'spotlessApply' if we are NOT in a CI environment
+if (!System.getenv('CI')?.toBoolean()) {
+	tasks.named('compileJava').configure {
+		dependsOn('spotlessApply')
+	}
+}
+
+// Configure Jacoco coverage verification
+tasks.named('jacocoTestCoverageVerification').configure {
+	dependsOn('test')
+	violationRules {
+		rule {
+			limit {
+				minimum = 0.70
+			}
+		}
+	}
+}
+
+tasks.named('check') {
+	dependsOn 'jacocoTestCoverageVerification'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	testLogging {
+		events 'FAILED', 'SKIPPED' // Show all test events in the console
+		exceptionFormat = 'full' // Show detailed test names
+	}
+	finalizedBy tasks.jacocoTestReport
+}
+
+jacocoTestReport {
+	reports {
+		xml.required.set(true)
+		csv.required.set(false)
+		html.outputLocation.set(layout.buildDirectory.dir('reports/jacoco/test/html/'))
+	}
+}

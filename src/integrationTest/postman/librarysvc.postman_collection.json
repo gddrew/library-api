@@ -1,0 +1,3973 @@
+{
+	"info": {
+		"_postman_id": "cb5942ab-80c1-4286-898f-2fb831ed2e67",
+		"name": "librarysvc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18368239"
+	},
+	"item": [
+		{
+			"name": "functional",
+			"item": [
+				{
+					"name": "10000_Media",
+					"item": [
+						{
+							"name": "10001_getAllMedia",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains at least one array with elements\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Check if the response is an array",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"",
+											"    // Check that the array has at least one element",
+											"    pm.expect(jsonData.length).to.be.greaterThan(0);",
+											"",
+											"    // Check that at least an id and bookId are returned",
+											"    pm.expect(jsonData[0]).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"created_date\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"mediaTitle\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"authorName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"isbnId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"barCodeId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"publicationYear\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"mediaType\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"mediaFormat\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"numberPages\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"classificationCategory\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"classificationSubCategory\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"publisherName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"disposalDisposition\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"acquisitionDate\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"lastUpdateDate\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"status\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"sensitive\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10002_getItemById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(parseInt(jsonData.mediaId)).to.eql(parseInt(pm.environment.get(\"mediaId\")));",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10003_getItemByIdNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.text();",
+											"",
+											"    pm.expect(jsonData).to.include(\"No item with this ID found in collection\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/1",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10004_getItemByTitle",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData[0].mediaTitle).to.eql(pm.environment.get(\"title\"));",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/title/{{title}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"title",
+										"{{title}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10005_getItemByTitleNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.text();",
+											"",
+											"    pm.expect(jsonData).to.include(\"No item with this title found in collection\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/title/BadTitle",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"title",
+										"BadTitle"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10006_getItemByAuth",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData[0].authorName).to.eql(pm.environment.get(\"author\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/author/{{author}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"author",
+										"{{author}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10007_getItemByAuthNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.text();",
+											"",
+											"    pm.expect(jsonData).to.include(\"No item by this author found in collection\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/author/BadAuthor",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"author",
+										"BadAuthor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10008_getItemByPublisher",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData[0].publisherName).to.eql(pm.environment.get(\"publisher\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/publisher/{{publisher}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"publisher",
+										"{{publisher}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10009_getItemByPublisherNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.text();",
+											"",
+											"    pm.expect(jsonData).to.include(\"No item by this publisher found in collection\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/publisher/BadPublisher",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"publisher",
+										"BadPublisher"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10010_getItemByIsbn",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData[0].isbnId).to.eql(pm.environment.get(\"isbn\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/isbn/{{isbn}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"isbn",
+										"{{isbn}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10011_getItemByIsbnNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.text();",
+											"",
+											"    pm.expect(jsonData).to.include(\"No item by this ISBN ID found in collection\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/isbn/BadIsbn",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"isbn",
+										"BadIsbn"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10012_CreateBook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    let jsonData = pm.response.json();",
+											"",
+											"    // Test that system-supplied values are properly supplied:",
+											"    pm.expect(jsonData).to.have.property(\"lastUpdateDate\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData).to.have.property(\"barCodeId\");",
+											"    pm.expect(jsonData.status).to.equal(\"AVAILABLE\");",
+											"",
+											"    // Test that values supplied in body are properly returned:",
+											"    pm.expect(jsonData.mediaTitle).to.equal(\"Bright Flows the River\");",
+											"    pm.expect(jsonData.authorName).to.equal(\"Taylor Caldwell\");",
+											"    pm.expect(jsonData.isbnId).to.equal(\"9780385141710\");",
+											"    pm.expect(jsonData.publicationYear).to.equal(\"1978\");",
+											"    pm.expect(jsonData.mediaType).to.equal(\"Book\");",
+											"    pm.expect(jsonData.mediaFormat).to.equal(\"Hardcover\");",
+											"    pm.expect(jsonData.numberPages).to.equal(445);",
+											"    pm.expect(jsonData.classificationCategory).to.equal(\"Fiction\");",
+											"    pm.expect(jsonData.classificationSubCategory).to.equal(\"Adult Fiction\");",
+											"    pm.expect(jsonData.publisherName).to.equal(\"Doubleday\");",
+											"    pm.expect(jsonData.disposalDisposition).to.equal(\"Sell or Donate\");",
+											"    pm.expect(jsonData.acquisitionDate).to.equal(\"1980-04-28\");",
+											"",
+											"});",
+											"pm.test(\"Media ID is properly received and set as environment variable\", function () {",
+											"    let jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"mediaId\");",
+											"    pm.environment.set(\"mediaIdToDelete\", jsonData.mediaId);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"mediaTitle\": \"Bright Flows the River\",\n    \"authorName\": \"Taylor Caldwell\",\n    \"isbnId\": \"9780385141710\",\n    \"publicationYear\": \"1978\",\n    \"mediaType\": \"Book\",\n    \"mediaFormat\": \"Hardcover\",\n    \"numberPages\": 445,\n    \"classificationCategory\": \"Fiction\",\n    \"classificationSubCategory\": \"Adult Fiction\",\n    \"publisherName\": \"Doubleday\",\n    \"disposalDisposition\": \"Sell or Donate\",\n    \"acquisitionDate\": \"1980-04-28\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10013_FullUpdateBook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mediaTitle\": \"Brightly Flows the River\",\n  \"authorName\": \"Caldwell, Taylor\",\n  \"isbnId\": \"9780385141710\",\n  \"publicationYear\": \"1978\",\n  \"mediaType\": \"Book\",\n  \"mediaFormat\": \"Hardcover\",\n  \"numberPages\": 445,\n  \"classificationCategory\": \"Fiction\",\n  \"classificationSubCategory\": \"Artsy fartsy stuff\",\n  \"publisherName\": \"Doubleday\",\n  \"disposalDisposition\": \"Jellyroll\",\n  \"acquisitionDate\": \"1980-07-28\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaIdToDelete}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaIdToDelete}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10014_FullUpdateBookNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    let jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.equal(\"No item with this ID found in collection\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.equal(\"MEDIA_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mediaTitle\": \"History of Art: A Survey of the Major Visual Arts from the Dawn of History to the Present Day, Second Edition\",\n  \"authorName\": \"H.W. Janson with Dora Jane Janson\",\n  \"isbnId\": \"9780133892963\",\n  \"publicationYear\": \"1977\",\n  \"mediaType\": \"Book\",\n  \"mediaFormat\": \"Hardcover\",\n  \"numberPages\": 767,\n  \"classificationCategory\": \"Non-Fiction\",\n  \"classificationSubCategory\": \"Artsy fartsy stuff\",\n  \"publisherName\": \"Prentice-Hall, Inc. and Harry N. Abrams\",\n  \"disposalDisposition\": \"Jellyroll\",\n  \"acquisitionDate\": \"1980-07-28\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10015_UpdateBook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"disposalDisposition\": \"Use it for target practice\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaIdToDelete}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaIdToDelete}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10016_UpdateBookNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    let jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.equal(\"No item with this ID found in collection\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.equal(\"MEDIA_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"mediaTitle\": \"History of Art: A Survey of the Major Visual Arts from the Dawn of History to the Present Day\",\n  \"authorName\": \"H.W. Janson with Dora Jane Janson\",\n  \"publisherName\": \"Prentice-Hall, Inc. and Harry N. Abrams\",\n  \"disposalDisposition\": \"Sell or Donate\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10017_UpdateBarcodes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.response.to.have.body(\"Barcode updated for existing media\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/update/barcodes",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"update",
+										"barcodes"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10018_DeleteBook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaIdToDelete}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaIdToDelete}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "10019_DeleteBookNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    let jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.equal(\"No item with this ID found in collection\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.equal(\"MEDIA_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/collection/media/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "20000_Patrons",
+					"item": [
+						{
+							"name": "20001_getAllPatrons",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains at least one array with elements\", function () {",
+											"    // Parse the resonse body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Check if the response is an array",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"",
+											"    // Check that the array has at least one element",
+											"    pm.expect(jsonData.length).to.be.greaterThan(0);",
+											"",
+											"    // Check that at least some needed field elements are returned",
+											"    pm.expect(jsonData[0]).to.have.property(\"lastUpdateDate\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"created_date\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20002_getPatronById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"patronId\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20003_getPatronByIdNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Patron not found with ID:\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/90000000",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"90000000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20004_getPatronByName",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData[0].patronName).to.eql(pm.environment.get(\"patronName\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/name/{{patronName}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"name",
+										"{{patronName}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20005_getPatronByNameNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No patrons with name provided found\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/name/BadPatronName",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"name",
+										"BadPatronName"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20006_getPatronByBirthDate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData[0].dateOfBirth).to.eql(pm.environment.get(\"dateOfBirth\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/dob/{{dateOfBirth}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"dob",
+										"{{dateOfBirth}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20007_getPatronByBirthDateNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No patrons with date of birth provided found\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/dob/{{BadDateOfBirth}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"dob",
+										"{{BadDateOfBirth}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20008_getPatronByTelephone",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData[0].telephoneHome).to.eql(pm.environment.get(\"telephone\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/telephone/{{telephone}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"telephone",
+										"{{telephone}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20009_getPatronByTelephoneNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No patrons with telephone number provided found\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/telephone/9999999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"telephone",
+										"9999999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20010_getPatronByEmail",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData[0].emailAddress).to.eql(pm.environment.get(\"emailAddress\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/email/{{emailAddress}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"email",
+										"{{emailAddress}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20011_getPatronByEmailNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No patrons with email address provided found\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/patrons/patron/email/{{BadEmailAddress}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"patron",
+										"email",
+										"{{BadEmailAddress}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20012_CreatePatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronName\": \"Chester T Molester\",\n    \"dateOfBirth\": \"1947-07-08\",\n    \"streetAddress\": \"336 Rill Road\",\n    \"cityName\": \"Wilmington\",\n    \"stateName\": \"NC\",\n    \"zipCode\": \"28403\",\n    \"telephoneHome\": \"9107079355\",\n    \"telephoneMobile\": \"9109104269\",\n    \"emailAddress\": \"chestertm@gmail.com\",\n    \"contactMethod\": \"mail\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20013_CreatePatron_Duplicate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    const responseBody = pm.response.json();",
+											"    pm.expect(responseBody.message).to.equal(\"A patron with the name Elroy Jetson and date of birth 2013-05-02 already exists\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronName\": \"Elroy Jetson\",\n    \"dateOfBirth\": \"2013-05-02\",\n    \"streetAddress\": \"Skypad Apartments\",\n    \"cityName\": \"Orbit City\",\n    \"stateName\": \"OS\",\n    \"zipCode\": \"00011\",\n    \"telephoneHome\": \"3115552368\",\n    \"telephoneMobile\": \"3115550149\",\n    \"emailAddress\": \"HisBoyElroy@gmail.com\",\n    \"contactMethod\": \"Email\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20014_FullUpdatePatron",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronName\": \"Elroy Jetson\",\n    \"dateOfBirth\": \"2013-05-02\",\n    \"streetAddress\": \"Skypad Apartments\",\n    \"cityName\": \"Orbit City\",\n    \"stateName\": \"OS\",\n    \"zipCode\": \"00011\",\n    \"telephoneHome\": \"3115552368\",\n    \"telephoneMobile\": \"3115550149\",\n    \"emailAddress\": \"HisBoyElroy@gmail.com\",\n    \"contactMethod\": \"email\",\n    \"status\": \"ACTIVE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons/10000006",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"10000006"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20015_FullUpdatePatronNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Patron with ID provided not found: \");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronName\": \"Invalid Patron\",\n    \"dateOfBirth\": \"1958-05-02\",\n    \"streetAddress\": \"205 Ponters Rfer Rd\",\n    \"cityName\": \"Wilmington\",\n    \"stateName\": \"NC\",\n    \"zipCode\": \"28411\",\n    \"telephoneHome\": \"9100000000\",\n    \"telephoneMobile\": \"9100000001\",\n    \"emailAddress\": \"invalidpatron@example.com\",\n    \"contactMethod\": \"Email\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20016_UpdatePatron",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"emailAddress\": \"drewg@rpi.edu\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20017_UpdatePatronNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Patron with ID provided not found: \");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"emailAddress\": \"invalidpatron@example.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "20018_UpdateBarcodes",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/patrons/update/barcodes",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"patrons",
+										"update",
+										"barcodes"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "30000_Loans",
+					"item": [
+						{
+							"name": "30001_CheckoutBook",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"loanId\");",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.eql(\"Item(s) checked out successfully\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaItems\");",
+											"    pm.expect(jsonData.mediaItems).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaTitle\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaStatus\");",
+											"    pm.expect(jsonData.mediaItems[0].mediaStatus).to.eql(\"CHECKED_OUT\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"formattedBarcodeId\");",
+											"    pm.expect(jsonData.mediaItems[0].formattedBarcodeId).to.contain(pm.environment.get(\"mediaId\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [{{mediaId}}],\n    \"transactionType\": \"CHECKOUT\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30002_verifyBookCheckedOut",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(parseInt(jsonData.mediaId)).to.eql(parseInt(pm.environment.get(\"mediaId\")));",
+											"    pm.expect(jsonData.status).to.eql(\"CHECKED_OUT\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30003_CheckoutBookNotFound",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.eql(\"No item with this ID found in collection\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"MEDIA_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [999],\n    \"transactionType\": \"CHECKOUT\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30004_CheckoutPatronNotFound",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"Patron not found with ID:\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"PATRON_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 999,\n    \"mediaIds\": [10000001],\n    \"transactionType\": \"CHECKOUT\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30005_CheckoutBookNotAvailable",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"patronId\", \"10000001\");",
+											"pm.environment.set(\"mediaId\", \"10000013\");"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"Invalid media status for action\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"MEDIA_NOT_AVAILABLE\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [10000103],\n    \"transactionType\": \"CHECKOUT\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30006_CheckoutPatronIneligible",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"Patron is suspended and not eligible for checkout\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"PATRON_INELIGIBLE\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{inelgibilePatronId}},\n    \"mediaIds\": [10000009],\n    \"transactionType\": \"CHECKOUT\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30007_CheckoutBookMinor",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"pm.environment.set(\"patronId\", \"10000001\");",
+											"pm.environment.set(\"mediaId\", \"10000103\");"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"Minor patrons cannot checkout sensitive media\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"PATRON_INELIGIBLE\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{minorPatronId}},\n    \"mediaIds\": [{{sensitiveMediaId}}],\n    \"transactionType\": \"CHECKOUT\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30008_PatronLoanHistory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"loanId\");    ",
+											"    pm.expect(pm.response.text()).to.include(\"mediaId\");",
+											"    pm.expect(pm.response.text()).to.include(\"patronId\");",
+											"    pm.expect(pm.response.text()).to.include(\"transactionDate\");",
+											"    pm.expect(pm.response.text()).to.include(\"transactionType\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/loans/history/patron/{{patronId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"history",
+										"patron",
+										"{{patronId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30009_MediaLoanHistory",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"loanId\");    ",
+											"    pm.expect(pm.response.text()).to.include(\"mediaId\");",
+											"    pm.expect(pm.response.text()).to.include(\"patronId\");",
+											"    pm.expect(pm.response.text()).to.include(\"transactionDate\");",
+											"    pm.expect(pm.response.text()).to.include(\"transactionType\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/loans/history/media/{{mediaId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"history",
+										"media",
+										"{{mediaId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30010_ReturnBook",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"loanId\");",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.eql(\"Item(s) returned successfully\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaItems\");",
+											"    pm.expect(jsonData.mediaItems).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaTitle\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaStatus\");",
+											"    pm.expect(jsonData.mediaItems[0].mediaStatus).to.eql(\"AVAILABLE\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"formattedBarcodeId\");",
+											"    pm.expect(jsonData.mediaItems[0].formattedBarcodeId).to.contain(pm.environment.get(\"mediaId\"));",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [{{mediaId}}],\n    \"transactionType\": \"RETURN\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30011_verifyBookReturned",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(parseInt(jsonData.mediaId)).to.eql(parseInt(pm.environment.get(\"mediaId\")));",
+											"    pm.expect(jsonData.status).to.eql(\"AVAILABLE\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/collection/media/{{mediaId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"collection",
+										"media",
+										"{{mediaId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30012_ReturnBookInvalidMedia",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"No item with this ID found in collection\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"MEDIA_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [888],\n    \"transactionType\": \"RETURN\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30013_ReturnBookInvalidPatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.contain(\"Patron not found with ID: 999\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"PATRON_NOT_FOUND\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 999,\n    \"mediaIds\": [{{mediaId}}],\n    \"transactionType\": \"RETURN\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30014_CheckoutMultipleBooks",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"loanId\");",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.eql(\"Item(s) checked out successfully\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaItems\");",
+											"    pm.expect(jsonData.mediaItems).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaTitle\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaStatus\");",
+											"    pm.expect(jsonData.mediaItems[0].mediaStatus).to.eql(\"CHECKED_OUT\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"formattedBarcodeId\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [10000031,10000032,10000040,10000041],\n    \"transactionType\": \"CHECKOUT\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "30015_ReturnBooks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response recieved\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData).to.have.property(\"loanId\");",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData.message).to.eql(\"Item(s) returned successfully\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaItems\");",
+											"    pm.expect(jsonData.mediaItems).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaTitle\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"mediaStatus\");",
+											"    pm.expect(jsonData.mediaItems[0].mediaStatus).to.eql(\"AVAILABLE\");",
+											"    pm.expect(jsonData.mediaItems[0]).to.have.property(\"formattedBarcodeId\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": {{patronId}},\n    \"mediaIds\": [10000031,10000032,10000040,10000041],\n    \"transactionType\": \"RETURN\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/loans/action",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"loans",
+										"action"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "40000_Cards",
+					"item": [
+						{
+							"name": "40001_getAllCards",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Response contains at least one array with elements\", function () {",
+											"    // Parse the resonse body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Check if the response is an array",
+											"    pm.expect(Array.isArray(jsonData)).to.be.true;",
+											"",
+											"    // Check that the array has at least one element",
+											"    pm.expect(jsonData.length).to.be.greaterThan(0);",
+											"",
+											"    // Check that at least some needed field elements are returned",
+											"    pm.expect(jsonData[0]).to.have.property(\"lastUpdateDate\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"id\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"createdDate\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"barCodeId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"status\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/cards",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40002_getByCardId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(parseInt(jsonData.cardId)).to.eql(parseInt(pm.environment.get(\"cardId\")));",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/cards/{{cardId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"{{cardId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40003_getByPatronId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(parseInt(jsonData[0].patronId)).to.eql(parseInt(pm.environment.get(\"patronId\")));",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/cards/patron/{{patronId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"patron",
+										"{{patronId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40004_getByCardIdNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No card with this ID found in collection\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/cards/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40005_getByPatronIdNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"No card for patron with this ID found in collection\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/cards/patron/99999999",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"patron",
+										"99999999"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40006_CreateCard",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Test that system-supplied values are properly supplied:",
+											"    pm.expect(jsonData).to.have.property(\"lastUpdateDate\");",
+											"    pm.expect(jsonData).to.have.property(\"id\");",
+											"    pm.expect(jsonData).to.have.property(\"cardId\");",
+											"    pm.expect(jsonData).to.have.property(\"createdDate\");",
+											"    pm.expect(jsonData).to.have.property(\"barCodeId\");",
+											"    pm.expect(jsonData).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData.status).to.equal(\"ACTIVE\");",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/patron/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"patron",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40007_CreateCard_PatronAlreadyHasCard",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"",
+											"    pm.expect(jsonData.message).to.eql(\"Patron already has an active library card.\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"CARD_ALREADY_EXISTS\");",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/patron/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"patron",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40008_CreateCard_PatronSuspended",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"",
+											"    pm.expect(jsonData.message).to.eql(\"Patron is suspended and cannot be issued a new card.\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"PATRON_INELIGIBLE\");",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000005\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/patron/10000005",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"patron",
+										"10000005"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40009_SetCardInactive",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.status).to.eql(\"INACTIVE\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"newStatus\": \"INACTIVE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/10000010/status",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"10000010",
+										"status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40010_SetCardLost",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.status).to.eql(\"LOST\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"newStatus\": \"LOST\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/10000010/status",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"10000010",
+										"status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "40011_TryToReactiveLostCard",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () {",
+											"    pm.response.to.have.status(403);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"",
+											"    pm.expect(jsonData.message).to.eql(\"A lost card cannot be reactivated. A new card must be issued.\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"CARD_LOST\");",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"newStatus\": \"ACTIVE\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/cards/10000010/status",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"cards",
+										"10000010",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "50000_Communication",
+					"item": [
+						{
+							"name": "50001_SendEmailPlainText",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.response.to.have.body(\"Email sent successfully\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"from\": \"librarian@anytownpubliclibrary.com\",\n    \"to\": \"gregoryddrew@gmail.com\",\n    \"subject\": \"Notification from Anytown Public Library\",\n    \"body\": \"This is a reminder that you have items due in 3 days. Login to your account to check and renew.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/send-email",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"send-email"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "50002_SendEmailHtml",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    pm.response.to.have.body(\"Email sent successfully\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"from\": \"librarian@anytownpubliclibrary.org\",\n  \"to\": \"gregoryddrew@gmail.com\",\n  \"subject\": \"Notification from Anytown Public Library\",\n  \"body\": \"<!DOCTYPE html>\\n<html>\\n<head>\\n    <title>Styled HTML Email</title>\\n</head>\\n<body style=\\\"margin:0; padding:0; background-color:#f2f2f2;\\\">\\n<table width=\\\"100%\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\">\\n    <tr>\\n        <td align=\\\"center\\\">\\n            <table width=\\\"600\\\" cellpadding=\\\"0\\\" cellspacing=\\\"0\\\" border=\\\"0\\\" style=\\\"background-color:#ffffff; border:1px solid #dddddd;\\\">\\n                <tr>\\n                    <td style=\\\"background-color: #16537e; color: white; padding: 10px; text-align: center; font-family: Arial, sans-serif;\\\">\\n                        <h1 style=\\\"margin:0;\\\">Notification</h1>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td style=\\\"padding: 20px; font-family: Arial, sans-serif; color: #555555; font-size: 16px;\\\">\\n                        <p style=\\\"margin:0 0 10px 0;\\\">This is a reminder that the following items are due in 3 days:</p>\\n                        <ul style=\\\"padding-left: 20px;\\\">\\n                            <li>Media ID: 10030104 Title: Bright Flows the River</li>\\n                            <li>Media ID: 10148226 Title: Journey to Ixtlan</li>\\n                            <li>Media ID: 10155788 Title: One Flew Over the Cuckoo's Next</li>\\n                        </ul>\\n                    </td>\\n                </tr>\\n                <tr>\\n                    <td style=\\\"background-color: #f4f4f4; padding: 20px; text-align: center; font-family: Arial, sans-serif; color: #999999; font-size: 12px;\\\">\\n                        Anytown Public Library System | 14460 Appalachian Falls Road | Anytown, OH 43990\\n                    </td>\\n                </tr>\\n            </table>\\n        </td>\\n    </tr>\\n</table>\\n</body>\\n</html>\\n\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/send-html-email",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"send-html-email"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "60000_Fines",
+					"item": [
+						{
+							"name": "60001_getFinesByPatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"fineId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"fineType\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"amount\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"dateAssessed\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"datePaid\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"waived\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"paid\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/fines/patron/10000005",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"patron",
+										"10000005"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60002_getFinesByPatronNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/fines/patron/{{patronId}}",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"patron",
+										"{{patronId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60003_getFinesByPatronPaid",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"fineId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0].fineType).to.eql(\"OVERDUE_ITEM\");",
+											"    pm.expect(jsonData[0].waived).to.eql(false);",
+											"    pm.expect(jsonData[0].paid).to.eql(true);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/fines/patron/10000003",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"patron",
+										"10000003"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60004_getFinesByFineId",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"fineId\");",
+											"    pm.expect(jsonData).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData).to.have.property(\"fineType\");",
+											"    pm.expect(jsonData).to.have.property(\"amount\");",
+											"    pm.expect(jsonData).to.have.property(\"dateAssessed\");",
+											"    pm.expect(jsonData.dateAssessed).to.not.be.null;",
+											"    pm.expect(jsonData).to.have.property(\"datePaid\");",
+											"    pm.expect(jsonData).to.have.property(\"waived\");",
+											"    pm.expect(jsonData).to.have.property(\"paid\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/fines/fine/10000005",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"fine",
+										"10000005"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60005_createFine",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Test that system-supplied values are properly supplied:",
+											"    pm.expect(jsonData).to.have.property(\"id\");",
+											"    pm.expect(jsonData).to.have.property(\"fineId\");",
+											"    pm.expect(jsonData).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData).to.have.property(\"fineType\");",
+											"    pm.expect(jsonData).to.have.property(\"amount\");",
+											"    pm.expect(jsonData).to.have.property(\"dateAssessed\");",
+											"    pm.expect(jsonData).to.have.property(\"datePaid\");",
+											"    pm.expect(jsonData).to.have.property(\"waived\");",
+											"    pm.expect(jsonData).to.have.property(\"paid\");",
+											"",
+											"    // Test that values supplied in body are properly returned:",
+											"    pm.expect(jsonData.patronId).to.equal(10000004);",
+											"    pm.expect(jsonData.mediaId).to.equal(10000001);",
+											"    pm.expect(jsonData.fineType).to.equal(\"OVERDUE_ITEM\");",
+											"    pm.expect(jsonData.amount).to.equal(15.5);",
+											"    pm.expect(jsonData.dateAssessed).to.not.eql(null);",
+											"    pm.expect(jsonData.datePaid).to.equal(null);",
+											"    pm.expect(jsonData.waived).to.equal(false);",
+											"    pm.expect(jsonData.paid).to.equal(false);",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000004,\n    \"mediaId\": 10000001,\n    \"fineType\": \"OVERDUE_ITEM\",\n    \"amount\": 15.50\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/fines/fine/create",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"fine",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60006_createFineDuplicate",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 409\", function () {",
+											"    pm.response.to.have.status(409);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"    pm.expect(jsonData.message).to.eql(\"Fine already exists for this patron for this media item and fine type\")",
+											"    pm.expect(jsonData.errorCode).to.eql(\"FINE_ALREADY_EXISTS\")",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000004,\n    \"mediaId\": 10000001,\n    \"fineType\": \"OVERDUE_ITEM\",\n    \"amount\": 15.50\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/fines/fine/create",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"fine",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "60007_createFineMediaNotFound",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"message\");",
+											"    pm.expect(jsonData).to.have.property(\"errorCode\");",
+											"",
+											"    pm.expect(jsonData.message).to.eql(\"Media not found\");",
+											"    pm.expect(jsonData.errorCode).to.eql(\"MEDIA_NOT_FOUND\");",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000004,\n    \"mediaId\": 16412729,\n    \"fineType\": \"OVERDUE_ITEM\",\n    \"amount\": 15.50\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/fines/fine/create",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"fines",
+										"fine",
+										"create"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "70000_Reports",
+					"item": [
+						{
+							"name": "70001_ReportCardPatron_All",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"streetAddress\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cityName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"stateName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"zipCode\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneHome\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneMobile\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"emailAddress\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/reports/cards-patrons",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"cards-patrons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "70002_ReportCardPatron_ByCard",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"streetAddress\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cityName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"stateName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"zipCode\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneHome\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneMobile\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"emailAddress\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/reports/cards-patrons?cardId=10000012",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"cards-patrons"
+									],
+									"query": [
+										{
+											"key": "cardId",
+											"value": "10000012"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "70003_ReportCardPatron_ByPatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cardStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"streetAddress\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"cityName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"stateName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"zipCode\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneHome\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"telephoneMobile\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"emailAddress\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/reports/cards-patrons?patronId=10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"cards-patrons"
+									],
+									"query": [
+										{
+											"key": "patronId",
+											"value": "10000001"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "70004_ReportLoanPatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"loanId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronName\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"loanStatus\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"items\");",
+											"    ",
+											"    pm.expect(jsonData[0].items).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0].items[0]).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData[0].items[0]).to.have.property(\"checkoutDate\");",
+											"    pm.expect(jsonData[0].items[0]).to.have.property(\"dueDate\");",
+											"    pm.expect(jsonData[0].items[0]).to.have.property(\"mediaId\");",
+											"    pm.expect(jsonData[0].items[0]).to.have.property(\"mediaDetails\");",
+											"",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"media_title\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"author_name\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"isbn_id\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"media_type\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"media_format\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"classification_category\");",
+											"    pm.expect(jsonData[0].items[0].mediaDetails).to.have.property(\"classification_subcategory\");",
+											"",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/reports/loans-patrons?patronId=10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"reports",
+										"loans-patrons"
+									],
+									"query": [
+										{
+											"key": "patronId",
+											"value": "10000001"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "80000_Invoices",
+					"item": [
+						{
+							"name": "80001_getInvoicesById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.have.property(\"invoiceId\");",
+											"    pm.expect(jsonData).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData).to.have.property(\"amount\");",
+											"    pm.expect(jsonData).to.have.property(\"status\");",
+											"    pm.expect(jsonData).to.have.property(\"date\");",
+											"    pm.expect(jsonData).to.have.property(\"campaign\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/invoices/invoice/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"invoices",
+										"invoice",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "80002_getInvoicesByPatron",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    pm.expect(jsonData).to.be.an('array').that.is.not.empty;",
+											"    pm.expect(jsonData[0]).to.have.property(\"invoiceId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"amount\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"status\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"date\");",
+											"    pm.expect(jsonData[0]).to.have.property(\"campaign\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{domain}}/api/invoices/invoice/patron/10000001",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"invoices",
+										"invoice",
+										"patron",
+										"10000001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "80003_createInvoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {",
+											"    pm.response.to.have.status(201);",
+											"});",
+											"",
+											"pm.test(\"Proper response received\", function () {",
+											"    // Parse the response body as JSON",
+											"    var jsonData = pm.response.json();",
+											"",
+											"    // Test that system-supplied values are properly supplied:",
+											"    pm.expect(jsonData).to.have.property(\"invoiceId\");",
+											"    pm.expect(jsonData).to.have.property(\"patronId\");",
+											"    pm.expect(jsonData).to.have.property(\"amount\");",
+											"    pm.expect(jsonData).to.have.property(\"status\");",
+											"    pm.expect(jsonData).to.have.property(\"date\");",
+											"    pm.expect(jsonData).to.have.property(\"campaign\");",
+											"",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000002,\n    \"campaign\": \"A New Hope\",\n    \"amount\": 1275,\n    \"status\": \"paid\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/invoices/invoice/create",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"invoices",
+										"invoice",
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "80004_updateInvoice",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"patronId\": 10000001,\n    \"campaign\": \"Some Campaign\",\n    \"amount\": 1550,\n    \"status\": \"paid\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{domain}}/api/invoices/invoice/10000016",
+									"host": [
+										"{{domain}}"
+									],
+									"path": [
+										"api",
+										"invoices",
+										"invoice",
+										"10000016"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CalculateCheckDigit",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/api/check-digit/calculate?number=164127293",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"check-digit",
+						"calculate"
+					],
+					"query": [
+						{
+							"key": "number",
+							"value": "164127293"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domain}}/api/auth/login",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
